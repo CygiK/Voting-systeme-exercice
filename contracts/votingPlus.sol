@@ -240,32 +240,5 @@ contract Voting is Ownable {
         // Retourne le tableau des gagnants
         return winners;
     }
-
-    // Fonction alternative pour comptabiliser les votes en cas d'égalité
-    function tallyDraw() external onlyOwner{
-        // Vérifie si on est dans la phase de fin de session de vote
-        require(workflowStatus == WorkflowStatus.VotingSessionEnded, "Current status is not voting session ended");
-        // Variable pour stocker le nombre de votes le plus élevé
-        uint highestCount;
-        
-        // Premier passage : trouve le meilleur score
-        for (uint i = 0; i < proposalsArray.length; i++) {
-            if (proposalsArray[i].voteCount > highestCount) {
-                highestCount = proposalsArray[i].voteCount;
-            }
-        }
-        
-        // Deuxième passage : ajoute tous les gagnants au tableau
-        for (uint j = 0; j < proposalsArray.length; j++) {
-            if (proposalsArray[j].voteCount == highestCount) {
-                winningProposalsID.push(j);
-            }
-        }
-
-        // Change l'état vers la fin du processus
-        workflowStatus = WorkflowStatus.VotesTallied;
-        // Émet l'événement de changement d'état
-        emit WorkflowStatusChange(WorkflowStatus.VotingSessionEnded, WorkflowStatus.VotesTallied);
-    }
 }
 
